@@ -9,13 +9,13 @@ library(tictoc)
 set.seed(1234)
 theme_set(theme_minimal())
 
+PT_stop_words <- read_excel("PT_stop_words.xlsx") #load Portuguese stop words
 COVID_Religion_Data <- read_excel("COVID&Religion Data.xlsx",
                                   col_types = c("text", "numeric", "date",
                                                 "text", "text", "text", "text", "text",
                                                 "text", "date", "text"))
 
 n_grams <- 1:5                          # extract n-grams for n=1,2,3,4,5
-#corpus_lite <- sample_n(COVID_Religion_Data, 50000)    # randomly sample only 50,000 jokes
 
 corpus_tokens <- map_df(n_grams, ~ COVID_Religion_Data %>%
                          # combine title and body
@@ -42,8 +42,8 @@ corpus_stop_words <- corpus_tokens %>%
                                 if_else(ngram == 3, word3,
                                         if_else(ngram == 2, word2, word1))))) %>%
   # remove tokens where the first or last word is a stop word
-  filter(word1 %in% stop_words$word |
-           last %in% stop_words$word) %>%
+  filter(word1 %in% PT_stop_words$word |
+           last %in% PT_stop_words$word) %>%
   select(ngram, token_id)
 
 # convert to dtm

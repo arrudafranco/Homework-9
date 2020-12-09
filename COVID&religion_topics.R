@@ -5,12 +5,13 @@ library(topicmodels)
 library(here)
 library(tm)
 library(tictoc)
+library(RColorBrewer)
 
 set.seed(1234)
 theme_set(theme_minimal())
 
 PT_stop_words <- read_excel("PT_stop_words.xlsx") #load Portuguese stop words
-COVID_Religion_Data <- read_excel("COVID&Religion Data.xlsx",
+COVID_Religion_Data <- read_excel("COVID&Religion_data.xlsx",
                                   col_types = c("text", "numeric", "date",
                                                 "text", "text", "text", "text", "text",
                                                 "text", "date", "text", "text"))
@@ -61,9 +62,9 @@ corpus_dtm <- corpus_tokens %>%
 # remove documents with no terms remaining
 corpus_dtm <- corpus_dtm[unique(corpus_dtm$i),]
 
-corpus_lda12 <- LDA(corpus_dtm, k = 12, control = list(seed = 123))
+corpus_lda12 <- LDA(corpus_dtm, k = 9, control = list(seed = 123))
 
-# A LDA_VEM topic model with 12 topics.
+# A LDA_VEM topic model with 9 topics.
 
 corpus_lda12_td <- tidy(corpus_lda12)
 
@@ -79,6 +80,7 @@ top_terms %>%
 
 ggplot(top_terms, aes(term, beta, fill = topic)) +
   geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
+  scale_fill_gradientn(colors = brewer.pal(6, "Dark2")) +
   scale_x_reordered() +
   facet_wrap(~ topic, scales = "free", ncol = 3) +
   coord_flip()

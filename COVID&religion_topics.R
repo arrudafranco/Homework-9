@@ -13,7 +13,7 @@ PT_stop_words <- read_excel("PT_stop_words.xlsx") #load Portuguese stop words
 COVID_Religion_Data <- read_excel("COVID&Religion Data.xlsx",
                                   col_types = c("text", "numeric", "date",
                                                 "text", "text", "text", "text", "text",
-                                                "text", "date", "text"))
+                                                "text", "date", "text", "text"))
 
 n_grams <- 1:5                          # extract n-grams for n=1,2,3,4,5
 

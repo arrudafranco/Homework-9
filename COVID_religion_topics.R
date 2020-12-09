@@ -5,13 +5,11 @@ library(topicmodels)
 library(here)
 library(tm)
 library(tictoc)
-library(RColorBrewer)
 
 set.seed(1234)
-theme_set(theme_minimal())
 
 PT_stop_words <- read_excel("PT_stop_words.xlsx") #load Portuguese stop words
-COVID_Religion_Data <- read_excel("COVID&Religion_data.xlsx",
+COVID_Religion_Data <- read_excel("COVID_religion_data.xlsx",
                                   col_types = c("text", "numeric", "date",
                                                 "text", "text", "text", "text", "text",
                                                 "text", "date", "text", "text"))
@@ -78,13 +76,7 @@ top_terms %>%
   mutate(topic = factor(topic),
          term = reorder_within(term, beta, topic))
 
-ggplot(top_terms, aes(term, beta, fill = topic)) +
-  geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
-  scale_fill_gradientn(colors = brewer.pal(6, "Dark2")) +
-  scale_x_reordered() +
-  facet_wrap(~ topic, scales = "free", ncol = 3) +
-  coord_flip()
-
+# removing stop words characteristic of this topic
 
 topical_stop_words <- data.frame(word = c("senhor", "deus", "igrejas", "igreja", "aleluia",
                                           "glória", "jesus", "verso", "capítulo", "bispo"))
@@ -136,10 +128,3 @@ top_terms_filtered <- corpus_filtered_lda12_td %>%
 top_terms_filtered %>%
   mutate(topic = factor(topic),
          term = reorder_within(term, beta, topic))
-
-ggplot(top_terms_filtered, aes(term, beta, fill = topic)) +
-  geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
-  scale_fill_gradientn(colors = brewer.pal(6, "Dark2")) +
-  scale_x_reordered() +
-  facet_wrap(~ topic, scales = "free", ncol = 3) +
-  coord_flip()

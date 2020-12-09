@@ -1,0 +1,42 @@
+---
+title: "COVID & Religion in Brazil"
+author: "Gustavo Arruda"
+date: "`r lubridate::today()`"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warnings = FALSE, message = FALSE)
+sys.source('COVID_religion_topics.R', envir = knitr::knit_global())
+theme_set(theme_minimal())
+library(ggplot2)
+library(RColorBrewer)
+```
+
+## Background
+
+I collected the data set used for this analysis during the Summer of 2020 for the [Preaching Goes Viral](https://blogs.miamioh.edu/critical-distance/preaching-goes-viral-responses-to-the-pandemic/) project. PGV focused on archiving online religious responses to the pandemic; this data set in particular focused on Braziliam Pentecostal-charismatic churches. Pentecostalism is a strand of Protestantism originated in California in the 1910s focused on spontaneous present-day gifts of the Spirit, like speaking in tongues, exorcisms and prophesizing. Todoay, Pentecostalism is represented by around a third of the Brazilian population; and by a third of the Brazilian Congress. The objective of this analysis is to uncover the thematic structure of this corpus. To achieve that, I am using a Latent Dirichlet allocation algorithm, which creates a probabilistic topical model.
+
+## Analysis
+
+```{r plot1, echo=FALSE}
+ggplot(top_terms, aes(term, beta, fill = topic)) +
+  geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
+  scale_fill_gradientn(colors = brewer.pal(6, "Dark2")) +
+  scale_x_reordered() +
+  facet_wrap(~ topic, scales = "free", ncol = 3) +
+  coord_flip()
+```
+
+A first model shows the need to not only consider broader Portuguese stop words, but also stop words particular to this topic. The following model takes that into account, eliminating words like "senhor", "deus" and "aleluia".
+
+```{r plot2, echo=FALSE}
+ggplot(top_terms_filtered, aes(term, beta, fill = topic)) +
+  geom_bar(alpha = 0.8, stat = "identity", show.legend = FALSE) +
+  scale_fill_gradientn(colors = brewer.pal(6, "Dark2")) +
+  scale_x_reordered() +
+  facet_wrap(~ topic, scales = "free", ncol = 3) +
+  coord_flip()
+```
+
+After eliminating some important topical stop words, we have a more useful topical model of this corpus. 

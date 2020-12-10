@@ -18,10 +18,10 @@ n_grams <- 1:5                          # extract n-grams for n=1,2,3,4,5
 
 corpus_tokens <- map_df(n_grams, ~ COVID_Religion_Data %>%
                          # combine title and body
-                         unite(col = COVID_Religion_Data, Title, `Text Data`, sep = " ") %>%
+                         unite(col = title_body, Title, `Text Data`, sep = " ") %>%
                          # tokenize
                          unnest_tokens(output = word,
-                                       input = COVID_Religion_Data,
+                                       input = title_body,
                                        token = "ngrams",
                                        n = .x) %>%
                          mutate(ngram = .x,
@@ -55,12 +55,12 @@ corpus_dtm <- corpus_tokens %>%
   cast_dtm(document = id, term = word, value = n) %>%
   removeSparseTerms(sparse = .999)
 
-# Joining, by = c("ngram", "token_id")
+## Joining, by = c("ngram", "token_id")
 
 # remove documents with no terms remaining
 corpus_dtm <- corpus_dtm[unique(corpus_dtm$i),]
 
-corpus_lda12 <- LDA(corpus_dtm, k = 9, control = list(seed = 123))
+corpus_lda12 <- LDA(corpus_dtm, k = 9, control = list(seed = 1234))
 
 # A LDA_VEM topic model with 9 topics.
 
@@ -79,7 +79,7 @@ top_terms %>%
 # removing stop words characteristic of this topic
 
 topical_stop_words <- data.frame(word = c("senhor", "deus", "igrejas", "igreja", "aleluia",
-                                          "glória", "jesus", "verso", "capítulo", "bispo"))
+                                          "glória", "jesus", "verso"))
 full_stop_words <- union(PT_stop_words, topical_stop_words)
 
 # remove stop words or n-grams beginning or ending with stop word
@@ -108,12 +108,12 @@ corpus_filtered_dtm <- corpus_tokens %>%
   cast_dtm(document = id, term = word, value = n) %>%
   removeSparseTerms(sparse = .999)
 
-# Joining, by = c("ngram", "token_id")
+## Joining, by = c("ngram", "token_id")
 
 # remove documents with no terms remaining
 corpus_filtered_dtm <- corpus_filtered_dtm[unique(corpus_filtered_dtm$i),]
 
-corpus_filtered_lda12 <- LDA(corpus_filtered_dtm, k = 9, control = list(seed = 123))
+corpus_filtered_lda12 <- LDA(corpus_filtered_dtm, k = 9, control = list(seed = 1234))
 
 # A LDA_VEM topic model with 9 topics.
 
